@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import ListContacts from './ListContacts'
 import ContactForm from './ContactForm'
 import FilterForm from './FilterForm'
+import ContactsService from '../services/persons'
 
 const App = () => {
     
@@ -13,11 +13,12 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
+
+    ContactsService
+      .getAll()
+      .then(initialContacts => {
         console.log('promise fulfilled')
-        setPersons(response.data)
+        setPersons(initialContacts)
       })
   }, [])
   console.log('render', persons.length, 'contacts')
@@ -37,13 +38,56 @@ const App = () => {
   const addContact = (event) => {
     event.preventDefault()
 
-    if (!persons.map(person => person.name).includes(newName)) {
-        setPersons(persons.concat({ name: newName, number: newNumber }))
-        setNewNumber('')
-        setNewName('')
+    const existingContact = persons.find(person => person.name === newName)
+
+    if (!existingContact) {
+
+        ContactsService
+          .create({ name: newName, number: newNumber })
+          .then(returnedContact => {
+
+            if (returnedContact) {
+              setPersons(persons.concat(returnedContact))
+              setNewNumber('')
+              setNewName('')
+            }
+          })
     }
     else {
-        window.alert(`${newName} already exists in your phonebook`)
+        
+      let result = window.confirm(`${existingContact.name} already exists in the phonebook, update their number?`);
+
+      if (result) {
+
+        const updatedContact = { ...existingContact, number: newNumber}
+
+        ContactsService.update(existingContact.id, updatedContact)
+          .then(returnedContact => {
+
+            if (returnedContact) {
+
+              setPersons(persons.map(person => person.id !== returnedContact.id ? person : returnedContact))
+              setNewNumber('')
+              setNewName('')
+            }
+          })
+      }
+    }
+  }
+
+  const removeContact = (contact) => {
+
+    let result = window.confirm(`Are you sure you want to delete ${contact.name}`);
+
+    if (result) {
+      
+      ContactsService.remove(contact.id)
+      .then(response => {
+
+        if (response.status === 200) {
+          setPersons(persons.filter(person => person.id !== contact.id))
+        }
+      })
     }
   }
 
@@ -54,7 +98,7 @@ const App = () => {
       <h2>Add a new contact:</h2>
         <ContactForm addContact={addContact} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-        <ListContacts persons={persons} filter={filter}/>
+        <ListContacts persons={persons} filter={filter} removeContact={removeContact}/>
     </div>
   )
 }
