@@ -3,6 +3,7 @@ import ListContacts from './ListContacts'
 import ContactForm from './ContactForm'
 import FilterForm from './FilterForm'
 import ContactsService from '../services/persons'
+import Notification from './Notification'
 
 const App = () => {
     
@@ -10,6 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -50,6 +52,13 @@ const App = () => {
               setPersons(persons.concat(returnedContact))
               setNewNumber('')
               setNewName('')
+
+              setMessage(
+                `'${returnedContact.name}' was added successfully!`
+              )
+              setTimeout(() => {
+                setMessage(null)
+              }, 4500)
             }
           })
     }
@@ -69,6 +78,13 @@ const App = () => {
               setPersons(persons.map(person => person.id !== returnedContact.id ? person : returnedContact))
               setNewNumber('')
               setNewName('')
+
+              setMessage(
+                `'${returnedContact.name}' was edited successfully!`
+              )
+              setTimeout(() => {
+                setMessage(null)
+              }, 4500)
             }
           })
       }
@@ -86,6 +102,13 @@ const App = () => {
 
         if (response.status === 200) {
           setPersons(persons.filter(person => person.id !== contact.id))
+          
+          setMessage(
+            `'${contact.name}' was removed successfully.`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 4500)
         }
       })
     }
@@ -94,6 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification message={message} />
         <FilterForm filter={filter} handleFilterChange={handleFilterChange}/>
       <h2>Add a new contact:</h2>
         <ContactForm addContact={addContact} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>

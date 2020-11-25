@@ -1,7 +1,9 @@
 import React from 'react'
 
 const FilterForm = (props) => (
-    <input value={props.filter} onChange={props.handleFilterChange}/>
+    <div>
+        filter via text: <input value={props.filter} onChange={props.handleFilterChange}/>
+    </div>
 )
 
 export default FilterForm
