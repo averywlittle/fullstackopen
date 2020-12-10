@@ -12,6 +12,7 @@ const App = () => {
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter] = useState('')
   const [ message, setMessage ] = useState(null)
+  const [ error, setError ] = useState(false)
 
   useEffect(() => {
     console.log('effect')
@@ -61,6 +62,17 @@ const App = () => {
               }, 4500)
             }
           })
+          .catch(error => {
+            
+            setError(true)
+            setMessage(
+              `${error}, ${error.response.data.error}`
+              )
+            setTimeout(() => {
+              setMessage(null)
+              setError(false)
+            }, 4500)
+          })
     }
     else {
         
@@ -86,6 +98,17 @@ const App = () => {
                 setMessage(null)
               }, 4500)
             }
+          })
+          .catch(error => {
+            
+            setError(true)
+            setMessage(
+              `${error}, ${error.response.data.error}`
+              )
+            setTimeout(() => {
+              setMessage(null)
+              setError(false)
+            }, 4500)
           })
       }
     }
@@ -117,7 +140,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Notification message={message} />
+        <Notification message={message} error={error}/>
         <FilterForm filter={filter} handleFilterChange={handleFilterChange}/>
       <h2>Add a new contact:</h2>
         <ContactForm addContact={addContact} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
