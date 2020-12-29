@@ -1,0 +1,13 @@
+GET http://localhost:3003/api/blogs HTTP/1.1
+
+###
+
+POST http://localhost:3003/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Avery's Journal",
+    "author": "Avery Little",
+    "url": "www.averywlittle.substack.com",
+    "likes": 7
+}
