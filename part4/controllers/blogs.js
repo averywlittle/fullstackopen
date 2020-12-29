@@ -1,5 +1,5 @@
 const blogsRouter = require('express').Router()
-const Blog = require('../models/blog')//mongoose.model('Blog', blogSchema)
+const Blog = require('../models/blog')
 
 blogsRouter.get('/', (request, response) => {
     Blog
