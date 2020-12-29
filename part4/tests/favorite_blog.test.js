@@ -28,7 +28,7 @@ describe('favorite blog', () => {
       }
     ]
   
-    test('when list has only one blog, equals the likes of that', () => {
+    test('when list has more than one blog, equals the blog with the most likes', () => {
       const result = listHelper.favoriteBlog(blogList)
       expect(result).toEqual({
         _id: '5a422345235hk2345676234d1',

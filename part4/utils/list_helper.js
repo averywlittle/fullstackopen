@@ -13,7 +13,25 @@ const totalLikes = (blogPosts) => {
 }
 
 const favoriteBlog = (blogs) => {
-    const reducer = (prev, curr) => prev.likes < curr.likes ? prev : curr
+    if (blogs[0].likes === null) {
+        console.log('blogs[0] doesnt have likes')
+        return 0
+    }
+
+    const reducer = (prev, curr) => prev.likes > curr.likes ? prev : curr
+
+    return blogs.length === 0
+        ? 0
+        : blogs.reduce(reducer)
+}
+
+const mostBlogs = (blogs) => {
+    if (blogs[0].likes === null) {
+        console.log('blogs[0] doesnt have likes')
+        return 0
+    }
+
+    const reducer = (prev, curr) => prev.likes > curr.likes ? prev : curr
 
     return blogs.length === 0
         ? 0
