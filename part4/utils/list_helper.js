@@ -27,7 +27,7 @@ const favoriteBlog = (blogs) => {
 
 const mostBlogs = (blogs) => {
     if (blogs[0].likes === null) {
-        console.log('blogs[0] doesnt have likes')
+        console.log('blogs[0] doesnt have posts')
         return 0
     }
 
