@@ -1,17 +1,33 @@
-GET http://localhost:3003/api/unknownendpoint HTTP/1.1
+@test_id = 5fea8219bd55623c58bd7cfa
+@hostname = http://localhost:3003
+###
+
+GET {{hostname}}/api/unknownendpoint HTTP/1.1
 
 ###
 
-GET http://localhost:3003/api/blogs HTTP/1.1
+GET {{hostname}}/api/blogs HTTP/1.1
 
 ###
 
-POST http://localhost:3003/api/blogs HTTP/1.1
+POST {{hostname}}/api/blogs HTTP/1.1
 content-type: application/json
 
 {
     "title": "Avery's Journal",
     "author": "Avery Little",
     "url": "www.averywlittle.substack.com",
+    "likes": 7
+}
+
+###
+
+PUT {{hostname}}/api/blogs/{{test_id}} HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Avery's Journal",
+    "author": "Avery Little",
+    "url": "www.averywlittle.com",
     "likes": 7
 }

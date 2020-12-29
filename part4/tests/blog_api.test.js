@@ -90,6 +90,15 @@ test('missing url and title result in a 400 response', async () => {
     expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
 })
 
+test('a blog can be deleted', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
