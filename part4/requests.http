@@ -13,6 +13,7 @@ GET {{hostname}}/api/blogs HTTP/1.1
 
 POST {{hostname}}/api/blogs HTTP/1.1
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImF2ZXJ5d2xpdHRsZSIsImlkIjoiNWZlY2Q0Mzg5MzhjNjQ0ZWU4NWRiYzAwIiwiaWF0IjoxNjA5MzYwNzE0fQ.4vfJmnEee-8zTHRNHyvUyxa9KdR82c41c7pCg1UeWTs
 
 {
     "title": "Avery's Journal",
@@ -59,4 +60,14 @@ content-type: application/json
     "username": "jo",
     "name": "jesus",
     "password": "al"
+}
+
+### attempt login
+
+POST {{hostname}}/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "username": "averywlittle",
+    "password": "testpassword"
 }
