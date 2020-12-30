@@ -1,4 +1,4 @@
-@test_id = 5fea8219bd55623c58bd7cfa
+@test_id = 5feceef3f6d76052f0bacf0a
 @hostname = http://localhost:3003
 
 ### unknown endpoint
@@ -13,12 +13,12 @@ GET {{hostname}}/api/blogs HTTP/1.1
 
 POST {{hostname}}/api/blogs HTTP/1.1
 content-type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImF2ZXJ5d2xpdHRsZSIsImlkIjoiNWZlY2Q0Mzg5MzhjNjQ0ZWU4NWRiYzAwIiwiaWF0IjoxNjA5MzYwNzE0fQ.4vfJmnEee-8zTHRNHyvUyxa9KdR82c41c7pCg1UeWTs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImF2ZXJ5d2xpdHRsZSIsImlkIjoiNWZlY2Q0Mzg5MzhjNjQ0ZWU4NWRiYzAwIiwiaWF0IjoxNjA5MzYzMTc1fQ.N7kFoQbq3NdkuNYlMb44qNnQqt4JE3MLDZhWUZOdfHk
 
 {
-    "title": "Avery's Journal",
-    "author": "Avery Little",
-    "url": "www.averywlittle.substack.com",
+    "title": "The Sierra Guide",
+    "author": "Summer Varner",
+    "url": "www.thesierraguide.com",
     "likes": 7,
     "userId": "5fecd438938c644ee85dbc00"
 }
@@ -34,6 +34,12 @@ content-type: application/json
     "url": "www.averywlittle.com",
     "likes": 7
 }
+
+### delete blog
+
+DELETE  {{hostname}}/api/blogs/{{test_id}} HTTP/1.1
+content-type: application/application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImF2ZXJ5d2xpdHRsZSIsImlkIjoiNWZlY2Q0Mzg5MzhjNjQ0ZWU4NWRiYzAwIiwiaWF0IjoxNjA5MzY0MjQxfQ.wr-Aa4LU_CN7Sqoc_AzmNaKUfaSQtLv8z5xbfnyeIeQ
 
 ### get all blogs
 
