@@ -5,7 +5,9 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const { response } = require('express')
+
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -30,24 +32,6 @@ test('blog id property is proper format', async () => {
 })
 
 test('a valid blog can be added', async () => {
-
-    const user = {
-        "username": "averywlittle",
-        "password": "testpassword"
-    }
-
-    let token = ""
-
-    await api
-        .post('/api/login')
-        .send(user)
-        .end((error, response) => {
-            // token = response.token
-            // expect(response.status).toBe(200)
-            console.log('valid blog login token', response.token)
-        })
-
-    console.log('valid blog login token', token)
 
     const newBlog = {
         _id: '5a422aa71b54a676212d17f1',
