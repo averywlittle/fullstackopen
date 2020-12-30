@@ -1,5 +1,9 @@
+const config = require('../utils/config')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
 
 const initialBlogs = [
     {
@@ -53,9 +57,48 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const insertUser = async body => {
+    
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(body.password, saltRounds);
+
+    const user = new User({
+      username: body.username,
+      name: body.name,
+      passwordHash,
+      blogs: []
+    });
+
+    return user.save();
+}
+
+const getToken = async credentials => {
+    
+    const user = await User.findOne({ username: credentials.username });
+    const passwordCorrect =
+      user === null
+        ? false
+        : await bcrypt.compare(credentials.password, user.passwordHash);
+
+    if (!(user && passwordCorrect)) {
+      throw new Error('invalid user or password');
+    }
+
+    const userForToken = {
+      username: user.username,
+      id: user._id
+    };
+
+    const token = jwt.sign(userForToken, config.SECRET);
+
+    return token;
+}
+
 module.exports = {
   initialBlogs, 
   nonExistingId, 
   blogsInDb,
-  usersInDb
+  usersInDb,
+  insertUser,
+  getToken
 }

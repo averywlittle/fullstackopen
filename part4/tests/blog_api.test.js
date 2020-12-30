@@ -6,104 +6,142 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { response } = require('express')
 
+describe('Blog route integration tests', () => {
+    let token = null
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
+    beforeEach(async () => {
+        const testUser = {
+            username: "averywlittle",
+            name: "Avery Little",
+            password: "testpassword",
+            blogs: []
+        }
 
-    let blogObjects = helper.initialBlogs
-        .map(blog => new Blog(blog))
-    const promiseArray = blogObjects.map(blog => blog.save())
-    await Promise.all(promiseArray)
-})
+        await helper.insertUser(testUser)
+        token = await helper.getToken(testUser)
 
-test('blogs get request', async () => {
-    await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-})
+        await Blog.deleteMany({})
 
-test('blog id property is proper format', async () => {
-    const response = await api.get('/api/blogs')
+        let blogObjects = helper.initialBlogs
+            .map(blog => new Blog(blog))
+        const promiseArray = blogObjects.map(blog => blog.save())
+        await Promise.all(promiseArray)
+    })
 
-    expect(response.body[0].id).toBeDefined()
-})
+    afterEach(async () => {
+        await Blog.deleteMany({})
+        await User.deleteMany({})
+    })
 
-test('a valid blog can be added', async () => {
+    afterAll(() => {
+        mongoose.connection.close()
+        token = null
+    })
 
-    const newBlog = {
-        _id: '5a422aa71b54a676212d17f1',
-        title: 'Hola',
-        author: 'Zachary M. Little',
-        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-        likes: 2,
-        __v: 0
-    }
+    test('blogs get request', async () => {
+        await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+    })
 
-    await api
-        .post('/api/blogs')
-        .set('Authorization', token)
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+    test('blog id property is proper format', async () => {
+        const response = await api.get('/api/blogs')
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+        expect(response.body[0].id).toBeDefined()
+    })
 
-    const contents = blogsAtEnd.map(n => n.title)
-    expect(contents).toContain(
-        'Hola'
-    )
-})
+    test('a valid blog can be added', async () => {
 
-test('missing likes will initialize as 0', async () => {
-    const newBlog = {
-        _id: '5a422aa71b54a676212d17f1',
-        title: 'Hola',
-        author: 'Zachary M. Little',
-        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-        __v: 0
-    }
+        const newBlog = {
+            _id: '5a422aa71b54a676212d17f1',
+            title: 'Hola',
+            author: 'Zachary M. Little',
+            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+            likes: 2,
+            __v: 0
+        }
 
-    await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+        console.log('test token', token)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    console.log(blogsAtEnd)
-    expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
-})
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
 
-test('missing url and title result in a 400 response', async () => {
-    const newBlog = {
-        _id: '5a422aa71b54a676212d17f1',
-        author: 'Zachary M. Little',
-         __v: 0
-    }
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
 
-    await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(400)
+        const contents = blogsAtEnd.map(n => n.title)
+        expect(contents).toContain(
+            'Hola'
+        )
+    })
 
-    const blogsAtEnd = await helper.blogsInDb()
+    test('blogs route returns 401 without token', async () => {
 
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
-})
+        const newBlog = {
+            _id: '5a422aa71b54a676212d17f1',
+            title: 'Hola',
+            author: 'Zachary M. Little',
+            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+            likes: 2,
+            __v: 0
+        }
 
-test('a blog can be deleted', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
+            .expect('Content-Type', /application\/json/)
+    })
 
-    await api
-        .delete(`/api/blogs/${blogToDelete.id}`)
-        .expect(204)
-})
+    test('missing likes will initialize as 0', async () => {
+        const newBlog = {
+            _id: '5a422aa71b54a676212d17f1',
+            title: 'Hola',
+            author: 'Zachary M. Little',
+            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+            __v: 0
+        }
 
-afterAll(() => {
-    mongoose.connection.close()
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        console.log(blogsAtEnd)
+        expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
+    })
+
+    test('missing url and title result in a 400 response', async () => {
+        const newBlog = {
+            _id: '5a422aa71b54a676212d17f1',
+            author: 'Zachary M. Little',
+            __v: 0
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDb()
+
+        expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+    })
+
+    test('a blog can be deleted', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToDelete = blogsAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+    })
 })
