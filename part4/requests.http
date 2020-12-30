@@ -1,5 +1,6 @@
 @test_id = 5fea8219bd55623c58bd7cfa
 @hostname = http://localhost:3003
+
 ###
 
 GET {{hostname}}/api/unknownendpoint HTTP/1.1
@@ -30,4 +31,15 @@ content-type: application/json
     "author": "Avery Little",
     "url": "www.averywlittle.com",
     "likes": 7
+}
+
+###
+
+POST {{hostname}}/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "username": "averywlittle",
+    "name": "Avery Little",
+    "password": "testpassword"
 }
