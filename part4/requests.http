@@ -1,15 +1,15 @@
 @test_id = 5fea8219bd55623c58bd7cfa
 @hostname = http://localhost:3003
 
-###
+### unknown endpoint
 
 GET {{hostname}}/api/unknownendpoint HTTP/1.1
 
-###
+### get all blogs
 
 GET {{hostname}}/api/blogs HTTP/1.1
 
-###
+### create blog
 
 POST {{hostname}}/api/blogs HTTP/1.1
 content-type: application/json
@@ -18,10 +18,11 @@ content-type: application/json
     "title": "Avery's Journal",
     "author": "Avery Little",
     "url": "www.averywlittle.substack.com",
-    "likes": 7
+    "likes": 7,
+    "userId": "5fecd438938c644ee85dbc00"
 }
 
-###
+### edit blog
 
 PUT {{hostname}}/api/blogs/{{test_id}} HTTP/1.1
 content-type: application/json
@@ -33,7 +34,11 @@ content-type: application/json
     "likes": 7
 }
 
-###
+### get all blogs
+
+GET {{hostname}}/api/users HTTP/1.1
+
+### create user
 
 POST {{hostname}}/api/users HTTP/1.1
 content-type: application/json
@@ -41,5 +46,17 @@ content-type: application/json
 {
     "username": "averywlittle",
     "name": "Avery Little",
-    "password": "testpassword"
+    "password": "testpassword",
+    "blogs": []
+}
+
+### try to create invalid user
+
+POST {{hostname}}/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "username": "jo",
+    "name": "jesus",
+    "password": "al"
 }
