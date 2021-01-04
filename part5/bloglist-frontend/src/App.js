@@ -92,7 +92,7 @@ const App = () => {
   
       const removeStatus = await blogService.remove(id)
       if (removeStatus === 204) {
-        console.log('returned status', removeStatus)
+        console.log('remove status', removeStatus)
         
         const newBlogList = [...blogs]
         
