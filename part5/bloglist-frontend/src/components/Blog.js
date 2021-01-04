@@ -9,7 +9,7 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
   const blogStyle = { border: 'thin solid', margin: '2px', padding: '2px' }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div style={hideWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={() => setBlogInfoVisible(true)}>view</button>
