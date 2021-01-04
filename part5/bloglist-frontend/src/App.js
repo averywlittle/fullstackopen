@@ -15,7 +15,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const App = () => {
         url: blog.url,
         likes: blog.likes + 1
       }
-  
+
       const savedBlog = await blogService.update(newBlog, blog.id)
       if (savedBlog) {
         console.log('blog like', savedBlog)
@@ -81,7 +81,7 @@ const App = () => {
           setBlogs(newBlogList)
         }
       }
-  
+
     } catch (exception) {
       console.error('like blog exception', exception)
     }
@@ -89,18 +89,18 @@ const App = () => {
 
   const removeBlog = async (id) => {
     try {
-  
+
       const removeStatus = await blogService.remove(id)
       if (removeStatus === 204) {
         console.log('remove status', removeStatus)
-        
+
         const newBlogList = [...blogs]
-        
+
         const updatedBlogList = newBlogList.filter((blog) => { return blog.id === id ? false : true })
 
         setBlogs(updatedBlogList)
       }
-  
+
     } catch (exception) {
       console.error('remove blog exception', exception)
     }
@@ -108,25 +108,25 @@ const App = () => {
 
   const blogData = () => {
     const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-    const showWhenVisible = { display: blogFormVisible ? '' : 'none'}
-    
-    return (
-    <div>
-      <p>{user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
-      
-      <div style={hideWhenVisible}>
-        <button onClick={() => setBlogFormVisible(true)}>add blog</button>
-      </div>
+    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
-      <div style={showWhenVisible}>
-        <BlogForm blogs={blogs} setBlogs={setBlogs}/>
-        <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-      </div>
-      <h2>blogs</h2>
+    return (
+      <div>
+        <p>{user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
+
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogFormVisible(true)}>add blog</button>
+        </div>
+
+        <div style={showWhenVisible}>
+          <BlogForm blogs={blogs} setBlogs={setBlogs}/>
+          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+        </div>
+        <h2>blogs</h2>
         {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
           <Blog key={blog.id} blog={blog} user={user.name} likeBlog={likeBlog} removeBlog={removeBlog}/>
         )}
-    </div>
+      </div>
     )
   }
 
