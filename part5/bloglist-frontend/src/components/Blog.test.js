@@ -29,8 +29,6 @@ test('renders url and likes after view button pressed', () => {
         likes: 49
     }
 
-    //const mockHandler = jest.fn()
-
     const component = render(
         <Blog blog={blog} />
     )
