@@ -11,6 +11,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [blogFormVisible, setBlogFormVisible] = useState(false)
+  const [invalid, setInvalid] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -44,6 +45,9 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       console.error('login exception', exception)
+
+      setInvalid(true)
+      setTimeout(() => setInvalid(false), 2000)
     }
   }
 
@@ -115,7 +119,7 @@ const App = () => {
         <p>{user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
 
         <div style={hideWhenVisible}>
-          <button onClick={() => setBlogFormVisible(true)}>add blog</button>
+          <button className="toggle-blog-open" onClick={() => setBlogFormVisible(true)}>add blog</button>
         </div>
 
         <div style={showWhenVisible}>
@@ -123,16 +127,18 @@ const App = () => {
           <button onClick={() => setBlogFormVisible(false)}>cancel</button>
         </div>
         <h2>blogs</h2>
-        {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-          <Blog key={blog.id} blog={blog} user={user.name} likeBlog={likeBlog} removeBlog={removeBlog}/>
-        )}
+        <div className="blog-list">
+          {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+            <Blog key={blog.id} blog={blog} user={user.name} likeBlog={likeBlog} removeBlog={removeBlog}/>
+          )}
+        </div>
       </div>
     )
   }
 
   return (
     <div>
-      {user === null && <Login username={username} password={password} handleLogin={handleLogin} handleUsername={handleUsername} handlePassword={handlePassword}/>}
+      {user === null && <Login username={username} password={password} handleLogin={handleLogin} handleUsername={handleUsername} handlePassword={handlePassword} invalid={invalid}/>}
       {user !== null && blogData()}
     </div>
   )

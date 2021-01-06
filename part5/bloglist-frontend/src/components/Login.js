@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 const Login = (props) => (
   <div>
     <h2>log into application</h2>
+    {props.invalid && <p className="error">Wrong credentials</p>}
     <form onSubmit={props.handleLogin}>
       <div>
           username
         <input
           type="text"
           value={props.username}
+          id='username'
           name="Username"
           onChange={({ target }) => props.handleUsername(target.value)}
         />
@@ -19,11 +21,12 @@ const Login = (props) => (
         <input
           type="text"
           value={props.password}
+          id='password'
           name="Password"
           onChange={({ target }) => props.handlePassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button type="submit" id='login-button'>login</button>
     </form>
   </div>
 )
