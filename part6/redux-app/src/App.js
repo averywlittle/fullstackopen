@@ -1,5 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { createStore } from 'redux'
 
 const counterReducer = (state = 0, action) => {
@@ -36,5 +37,12 @@ function App() {
     </div>
   );
 }
+
+const renderApp = () => {
+  ReactDOM.render(<App />, document.getElementById('root'))
+}
+
+renderApp()
+store.subscribe(renderApp)
 
 export default App;
