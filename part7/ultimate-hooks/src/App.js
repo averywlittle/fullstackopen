@@ -1,4 +1,4 @@
-  
+
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -17,17 +17,28 @@ const useField = (type) => {
   }
 }
 
+// Implement fetching all and also creating a new resource
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // ...
+  useEffect(() => {
+    fetch()
+  }, [])
 
-  const create = (resource) => {
-    // ...
+  const fetch = async () => {
+    const response = await axios.get(baseUrl)
+    setResources(response.data)
+  }
+
+  const create = async resource => {
+    const response = await axios.post(baseUrl, resource)
+    const newResources = resources.concat(response.data)
+    setResources(newResources)
   }
 
   const service = {
-    create
+    create,
+    fetch
   }
 
   return [
@@ -47,10 +58,10 @@ const App = () => {
     event.preventDefault()
     noteService.create({ content: content.value })
   }
- 
+
   const handlePersonSubmit = (event) => {
     event.preventDefault()
-    personService.create({ name: name.value, number: number.value})
+    personService.create({ name: name.value, number: number.value })
   }
 
   return (
@@ -64,7 +75,7 @@ const App = () => {
 
       <h2>persons</h2>
       <form onSubmit={handlePersonSubmit}>
-        name <input {...name} /> <br/>
+        name <input {...name} /> <br />
         number <input {...number} />
         <button>create</button>
       </form>
