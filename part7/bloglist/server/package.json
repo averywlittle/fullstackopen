@@ -1,22 +1,21 @@
 {
-  "name": "part4",
+  "name": "part7",
   "version": "1.0.0",
-  "description": "blog list application",
+  "description": "blog list server",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose",
-    "start:test": "cross-env NODE_ENV=test node index.js"
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "jest": "^26.6.3",
-    "nodemon": "^2.0.6",
-    "supertest": "^6.0.1"
+    "nodemon": "^2.0.7",
+    "supertest": "^6.1.1"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -24,7 +23,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.9",
+    "mongoose": "^5.11.12",
     "mongoose-unique-validator": "^2.0.3"
   }
 }
