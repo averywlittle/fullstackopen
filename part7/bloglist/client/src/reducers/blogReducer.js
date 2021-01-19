@@ -4,20 +4,20 @@ import blogService from '../services/blogs'
 // Must be pure functions
 const reducer = (state = [], action) => {
     switch (action.type) {
-        case 'INIT': {
+        case 'INIT_BLOG': {
             return action.data
         }
-        case 'ADD': {
+        case 'ADD_BLOG': {
             return state.concat(action.data)
         }
-        case 'LIKE': {
+        case 'LIKE_BLOG': {
             const id = action.data.id
             const changedBlog = action.data
             return state.map(blog => 
                 blog.id !== id ? blog : changedBlog
             )
         }
-        case 'REMOVE': {
+        case 'REMOVE_BLOG': {
             const id = action.data
             return state.filter(blog => blog.id !== id)
         }
@@ -34,7 +34,7 @@ export const likeBlog = (blog) => {
         }
         const updatedBlog = await blogService.update(blogToUpdate, blog.id)
         dispatch({
-            type: 'LIKE',
+            type: 'LIKE_BLOG',
             data: updatedBlog
         })
     }
@@ -46,7 +46,7 @@ export const addBlog = (newBlog) => {
         const savedBlog = await blogService.create(newBlog)
         if (savedBlog) {
             dispatch({
-                type: 'ADD',
+                type: 'ADD_BLOG',
                 data: savedBlog
             })
         }
@@ -59,12 +59,12 @@ export const removeBlog = (id) => {
         const removeStatus = await blogService.remove(id)
         if (removeStatus === 204) {
             dispatch({
-                type: 'REMOVE',
+                type: 'REMOVE_BLOG',
                 data: id
             })
         } else {
             dispatch({
-                type: 'FAILED',
+                type: 'FAILED_BLOG',
                 data: id
             })
         }
@@ -76,7 +76,7 @@ export const initBlogs = () => {
     return async dispatch => {
         const blogs = await blogService.getAll()
         dispatch({
-            type: 'INIT',
+            type: 'INIT_BLOG',
             data: blogs
         })
     }

@@ -1,42 +1,79 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { loginUser } from '../reducers/userReducer'
+import Notification from '../components/Notification'
+import { showNotification } from '../reducers/notificationReducer'
 
-const Login = (props) => (
-  <div>
-    <h2>log into application</h2>
-    {props.invalid && <p className="error">Wrong credentials</p>}
-    <form onSubmit={props.handleLogin}>
-      <div>
+const Login = (props) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleUsername = (username) => {
+    setUsername(username)
+  }
+
+  const handlePassword = (password) => {
+    setPassword(password)
+  }
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    const result = await props.loginUser({ username, password })
+
+    if (result === 'Wrong credentials') {
+      props.showNotification(result, 5)
+
+      setUsername('')
+      setPassword('')
+    }
+  }
+
+  return (
+    <div>
+      <h2>log into application</h2>
+
+      <Notification />
+
+      <form onSubmit={handleLogin}>
+        <div>
           username
         <input
-          type="text"
-          value={props.username}
-          id='username'
-          name="Username"
-          onChange={({ target }) => props.handleUsername(target.value)}
-        />
-      </div>
-      <div>
+            type="text"
+            value={username}
+            id='username'
+            name="Username"
+            onChange={({ target }) => handleUsername(target.value)}
+          />
+        </div>
+        <div>
           password
         <input
-          type="text"
-          value={props.password}
-          id='password'
-          name="Password"
-          onChange={({ target }) => props.handlePassword(target.value)}
-        />
-      </div>
-      <button type="submit" id='login-button'>login</button>
-    </form>
-  </div>
-)
-
-Login.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  handleUsername: PropTypes.func.isRequired,
-  handlePassword: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
+            type="text"
+            value={password}
+            id='password'
+            name="Password"
+            onChange={({ target }) => handlePassword(target.value)}
+          />
+        </div>
+        <button type="submit" id='login-button'>login</button>
+      </form>
+    </div>
+  )
 }
 
-export default Login
+const mapDispatchToProps = {
+  loginUser,
+  showNotification
+}
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+const ConnectedLogin = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login)
+export default ConnectedLogin

@@ -12,15 +12,17 @@ const BlogList = (props) => {
       props.showNotification(`You liked the blog: ${blog.title}`, 5)
     }
     
-    const removeBlog = async (id) => {
-      props.removeBlog(id)
+    const removeBlog = async (blog) => {
+      props.removeBlog(blog.id)
 
-      props.showNotification(`You removed the blog: ${id}`, 5)
+      props.showNotification(`You removed the blog: ${blog.title}`, 5)
     }
 
     return (
         <div className="blog-list">
-            {props.blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+            {props.blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog =>
                 <Blog key={blog.id} blog={blog} user={blog.user.name} likeBlog={likeBlog} removeBlog={removeBlog} />
             )}
         </div>

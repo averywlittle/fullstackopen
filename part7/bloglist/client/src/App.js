@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { connect } from 'react-redux'
 import Login from './components/Login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { initUser, logoutUser } from './reducers/userReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { useDispatch } from 'react-redux'
 
-const App = () => {
-  const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const App = (props) => {
   const [blogFormVisible, setBlogFormVisible] = useState(false)
-  const [invalid, setInvalid] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -23,48 +18,18 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    dispatch(initUser())
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
-      console.log('user', user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      console.error('login exception', exception)
-
-      setInvalid(true)
-      setTimeout(() => setInvalid(false), 2000)
-    }
-  }
-
   const handleLogout = () => {
-    setUser(null)
-    window.localStorage.removeItem('loggedBlogappUser')
+    props.logoutUser()
   }
 
-  const handleUsername = (username) => {
-    setUsername(username)
-  }
-
-  const handlePassword = (password) => {
-    setPassword(password)
+  const userLoggedIn = () => {
+    if (props.user === null) return false
+    if (props.user.length === 0) return false
+    if (props.user.token) return true
+    else return false
   }
 
   const blogData = () => {
@@ -73,7 +38,7 @@ const App = () => {
 
     return (
       <div>
-        <p>{user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
+        <p>{props.user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
 
         <div style={hideWhenVisible}>
           <button className="toggle-blog-open" onClick={() => setBlogFormVisible(true)}>add blog</button>
@@ -93,10 +58,26 @@ const App = () => {
 
   return (
     <div>
-      {user === null && <Login username={username} password={password} handleLogin={handleLogin} handleUsername={handleUsername} handlePassword={handlePassword} invalid={invalid}/>}
-      {user !== null && blogData()}
+      {!userLoggedIn() && <Login />}
+      {userLoggedIn() && blogData()}
     </div>
   )
 }
 
-export default App
+const mapDispatchToProps = {
+  initBlogs,
+  initUser,
+  logoutUser
+}
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+export default ConnectedApp

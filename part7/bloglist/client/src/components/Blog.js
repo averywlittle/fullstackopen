@@ -20,7 +20,7 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
         <div>{blog.url}</div>
         <div>likes: {blog.likes} <button className="blog-like-button" onClick={() => likeBlog(blog)}>like</button></div>
         <div>{user}</div>
-        <button style={ { background: 'red' } } className="blog-delete-button" onClick={() => removeBlog(blog.id)}>remove</button>
+        <button style={ { background: 'red' } } className="blog-delete-button" onClick={() => removeBlog(blog)}>remove</button>
       </div>
     </div>
   )
