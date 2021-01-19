@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import blogService from '../services/blogs'
+import { addBlog } from '../reducers/blogReducer'
 import { showNotification } from '../reducers/notificationReducer'
+
 const BlogForm = (props) => {
 
   const [blogTitle, setBlogTitle] = useState('')
@@ -11,26 +12,15 @@ const BlogForm = (props) => {
   const createBlog = async (event) => {
     event.preventDefault()
 
-    try {
-      const newBlog = {
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogURL
-      }
-
-      const savedBlog = await blogService.create(newBlog)
-      if (savedBlog) {
-        const newBlogList = props.blogs.concat(savedBlog)
-        props.setBlogs(newBlogList)
-        setBlogTitle('')
-        setBlogAuthor('')
-        setBlogURL('')
-        props.showNotification(`You added the blog: ${savedBlog.title}`, 5)
-      }
-
-    } catch (exception) {
-      console.error('create blog exception', exception)
+    const newBlog = {
+      title: blogTitle,
+      author: blogAuthor,
+      url: blogURL
     }
+
+    props.addBlog(newBlog)
+
+    props.showNotification(`You added the blog: ${newBlog.title}`, 5)
   }
 
   return (
@@ -74,7 +64,8 @@ const BlogForm = (props) => {
 }
 
 const mapDispatchToProps = {
-  showNotification
+  showNotification,
+  addBlog
 }
 
 const ConnectedBlogForm = connect(
