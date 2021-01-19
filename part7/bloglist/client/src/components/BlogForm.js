@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import blogService from '../services/blogs'
-
-const BlogForm = ({ blogs, setBlogs }) => {
+import { showNotification } from '../reducers/notificationReducer'
+const BlogForm = (props) => {
 
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
@@ -19,12 +20,12 @@ const BlogForm = ({ blogs, setBlogs }) => {
 
       const savedBlog = await blogService.create(newBlog)
       if (savedBlog) {
-        const newBlogList = blogs.concat(savedBlog)
-        setBlogs(newBlogList)
+        const newBlogList = props.blogs.concat(savedBlog)
+        props.setBlogs(newBlogList)
         setBlogTitle('')
         setBlogAuthor('')
         setBlogURL('')
-        console.log('blogs', newBlogList)
+        props.showNotification(`You added the blog: ${savedBlog.title}`, 5)
       }
 
     } catch (exception) {
@@ -72,4 +73,12 @@ const BlogForm = ({ blogs, setBlogs }) => {
   )
 }
 
-export default BlogForm
+const mapDispatchToProps = {
+  showNotification
+}
+
+const ConnectedBlogForm = connect(
+  null,
+  mapDispatchToProps
+)(BlogForm)
+export default ConnectedBlogForm

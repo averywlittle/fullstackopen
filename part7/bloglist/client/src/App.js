@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -121,6 +122,8 @@ const App = () => {
         <div style={hideWhenVisible}>
           <button className="toggle-blog-open" onClick={() => setBlogFormVisible(true)}>add blog</button>
         </div>
+
+        <Notification />
 
         <div style={showWhenVisible}>
           <BlogForm blogs={blogs} setBlogs={setBlogs}/>
