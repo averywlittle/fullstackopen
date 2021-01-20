@@ -51,8 +51,8 @@ POST {{hostname}}/api/users HTTP/1.1
 content-type: application/json
 
 {
-    "username": "averywlittle",
-    "name": "Avery Little",
+    "username": "hahaha",
+    "name": "Gilfoyle",
     "password": "testpassword",
     "blogs": []
 }
@@ -77,3 +77,6 @@ content-type: application/json
     "username": "averywlittle",
     "password": "testpassword"
 }
+
+### get all users
+GET {{hostname}}/api/users HTTP/1.1

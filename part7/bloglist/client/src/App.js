@@ -4,13 +4,19 @@ import Login from './components/Login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
+import Users from './components/Users'
+import UserView from './components/UserView'
+import BlogView from './components/BlogView'
 import { initUser, logoutUser } from './reducers/userReducer'
+import { initUsers } from './reducers/usersReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { useDispatch } from 'react-redux'
+import {
+  Switch, Route, Link
+} from 'react-router-dom'
 
 const App = (props) => {
   const [blogFormVisible, setBlogFormVisible] = useState(false)
-
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -19,6 +25,10 @@ const App = (props) => {
 
   useEffect(() => {
     dispatch(initUser())
+  }, [])
+
+  useEffect(() => {
+      dispatch(initUsers())
   }, [])
 
   const handleLogout = () => {
@@ -38,13 +48,9 @@ const App = (props) => {
 
     return (
       <div>
-        <p>{props.user.name} logged in</p><button onClick={() => handleLogout()}>logout</button>
-
         <div style={hideWhenVisible}>
           <button className="toggle-blog-open" onClick={() => setBlogFormVisible(true)}>add blog</button>
         </div>
-
-        <Notification />
 
         <div style={showWhenVisible}>
           <BlogForm />
@@ -56,10 +62,56 @@ const App = (props) => {
     )
   }
 
+  const Menu = () => {
+    const padding = {
+      paddingRight: 5
+    }
+    return (
+      <div>
+        <Link to='/' style={padding}>blogs</Link>
+        <Link to='/users' style={padding}>users</Link>
+      </div>
+    )
+  }
+
+  const siteHeader = () => {
+    return (
+      <div>
+        <h2>Blog List App</h2>
+        <div>
+          <Menu />
+        </div>
+        <div>
+          {props.user.name} logged in
+          <button onClick={() => handleLogout()}>logout</button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
-      {!userLoggedIn() && <Login />}
-      {userLoggedIn() && blogData()}
+      {userLoggedIn() && siteHeader()}
+      {userLoggedIn() && <Notification />}
+      
+      <Switch>
+        <Route path="/users/:id">
+          {!userLoggedIn() && <Login />}
+          {userLoggedIn() && <UserView />}
+        </Route>
+        <Route path="/users">
+          {!userLoggedIn() && <Login />}
+          {userLoggedIn() && <Users />}
+        </Route>
+        <Route path="/blogs/:id">
+          {!userLoggedIn() && <Login />}
+          {userLoggedIn() && <BlogView />}
+        </Route>
+        <Route path="/">
+          {!userLoggedIn() && <Login />}
+          {userLoggedIn() && blogData()}
+        </Route>
+      </Switch>
     </div>
   )
 }
