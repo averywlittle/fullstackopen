@@ -1,15 +1,25 @@
 const config = require('../utils/config')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', (request, response) => {
     Blog
       .find({})
+      .populate('comments')
       .then(blogs => {
         response.json(blogs)
       })
+})
+
+blogsRouter.get('/:id', (request, response, next) => {
+  Blog.findById(request.params.id)
+    .then(foundBlog => {
+      response.json(foundBlog.toJSON())
+    })
+    .catch(error => next(error))
 })
   
 blogsRouter.post('/', async (request, response, next) => {
@@ -26,7 +36,8 @@ blogsRouter.post('/', async (request, response, next) => {
           title: body.title,
           author: body.author,
           url: body.url,
-          user: user
+          user: user,
+          comments: body.comments
         })
 
         const savedBlog = await blog.save()
@@ -46,14 +57,39 @@ blogsRouter.put('/:id', async (request, response, next) => {
     url: body.url,
     likes: body.likes
   }
-
+  console.log('full blog', blog)
+  console.log('blog id', request.params.id)
+  
   Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .then(updatedBlog => {
-      response.json(updatedBlog.toJSON())
+    .populate('comments')
+    .exec((err, updatedBlog) => {
+      if (err) {
+        next(error)
+      } else {
+        response.json(updatedBlog.toJSON())
+      }
     })
-    .catch(error => next(error))
 })
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body
+
+  const comment = new Comment({
+    content: body.content,
+    blog: request.params.id
+  })
+
+  const blog = await Blog.findById(request.params.id)
+  
+  const savedComment = await comment.save()
+
+  blog.comments = blog.comments.concat(savedComment._id)
+  await blog.save()
+  
+  response.status(201).json(savedComment)
+})
+
+// Doesn't delete record from user collection!
 blogsRouter.delete('/:id', async (request, response) => {
     const body = request.body
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
