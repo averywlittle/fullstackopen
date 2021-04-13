@@ -8,8 +8,8 @@ interface exerciseResult {
     average: number;
 }
 
-const calculateExercises = (exerciseHours: Array<number>): exerciseResult => {
-    const target = 1;
+export const calculateExercises = (exerciseHours: Array<number>, target: number): exerciseResult => {
+    console.log('hello');
     const result = {
         periodLength: exerciseHours.length,
         trainingDays: exerciseHours.filter(hours => hours > 0).length,
@@ -23,5 +23,7 @@ const calculateExercises = (exerciseHours: Array<number>): exerciseResult => {
     return result;
 };
 
-const inputArr: number[] = process.argv.slice(2).map(Number);
-console.log("Your exercise result is ", calculateExercises(inputArr));
+if (process.argv.length > 2) {
+    const inputArr: number[] = process.argv.slice(2).map(Number);
+    console.log("Your exercise result is ", calculateExercises(inputArr, 2));
+}
