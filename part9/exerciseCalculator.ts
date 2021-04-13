@@ -6,7 +6,7 @@ interface exerciseResult {
     ratingDescription: string;
     target: number;
     average: number;
-};
+}
 
 const calculateExercises = (exerciseHours: Array<number>): exerciseResult => {
     const target = 1;
@@ -23,4 +23,5 @@ const calculateExercises = (exerciseHours: Array<number>): exerciseResult => {
     return result;
 };
 
-console.log("Your exercise result is ", calculateExercises([3, 0, 2, 4.5, 0, 2, 4]));
+const inputArr: number[] = process.argv.slice(2).map(Number);
+console.log("Your exercise result is ", calculateExercises(inputArr));
