@@ -11,7 +11,7 @@ app.get('/hello', (_req, _res) => {
 
 app.get('/bmi', (_req, _res) => {
 
-    if(!_req.query.weight || !_req.query.height) _res.send({error: "malformatted parameters"});
+    if (!_req.query.weight || !_req.query.height) _res.send({ error: "malformatted parameters" });
     else {
         const weight = Number(_req.query.weight);
         const height = Number(_req.query.height);
